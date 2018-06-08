@@ -5,16 +5,14 @@ import (
 	"log"
 	"net/http"
 	"github.com/gorilla/mux"
-	"encoding/json"
 	"database/sql"
 	_ "github.com/lib/pq"
 	"github.com/golang-migrate/migrate"
 	"github.com/golang-migrate/migrate/database/postgres"
 	_ "github.com/golang-migrate/migrate/source/file"
 	"fmt"
+	"motome.com.au/fuzball-services/player"
 )
-
-var players []Player
 
 // our main function
 func main() {
@@ -40,62 +38,20 @@ func main() {
 
 	m.Up()
 
-	players = append(players, Player{ID: "1", Firstname: "Elliot", Lastname: "Smith"})
-
 	router := mux.NewRouter()
-	router.HandleFunc("/player", GetPlayers).Methods("GET")
-	router.HandleFunc("/player/{id}", GetPlayer).Methods("GET")
-	router.HandleFunc("/player", CreatePlayer).Methods("POST")
-	router.HandleFunc("/player/{id}", DeletePlayer).Methods("DELETE")
+	router.HandleFunc("/player", player.GetAllHandler).Methods("GET")
+	router.HandleFunc("/player/{id}", player.GetByIdHandler).Methods("GET")
+	router.HandleFunc("/player", player.CreateHandler).Methods("POST")
+	router.HandleFunc("/player/{id}", player.DeleteHandler).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
 
-type Player struct {
-	ID        string   `json:"id,omitempty"`
-	Firstname string   `json:"firstname,omitempty"`
-	Lastname  string   `json:"lastname,omitempty"`
-}
-
 type Team struct {
-	Player1 Player `json:"player1,omitempty"`
-	Player2 Player `json:"player2,omitempty"`
+	Player1 player.Player `json:"player1,omitempty"`
+	Player2 player.Player `json:"player2,omitempty"`
 }
 
 type Match struct {
 	TeamA Team `json:"teamA,omitempty"`
 	TeamB Team `json:"teamB,omitempty"`
-}
-
-func GetPlayers(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(players)
-}
-
-func GetPlayer(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	for _, item := range players {
-		if item.ID == params["id"] {
-			json.NewEncoder(w).Encode(item)
-			return
-		}
-	}
-}
-
-func CreatePlayer(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	var player Player
-	_ = json.NewDecoder(r.Body).Decode(&player)
-	player.ID = params["id"]
-	players = append(players, player)
-	json.NewEncoder(w).Encode(players)
-}
-
-func DeletePlayer(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	for index, item := range players {
-		if item.ID == params["id"] {
-			players = append(players[:index], players[index+1:]...)
-			break
-		}
-	}
-	json.NewEncoder(w).Encode(players)
 }
