@@ -31,7 +31,7 @@ func Create(player Player) Player {
 	println(1, strRows)
 
 	if err != nil {
-		println(2, err.Error())
+		println("Create erred: ", err.Error())
 	}
 
 	rows.Close()
@@ -39,10 +39,13 @@ func Create(player Player) Player {
 }
 
 func DeleteById(id string)  {
-	for index, item := range players {
-		if item.ID == id {
-			players = append(players[:index], players[index+1:]...)
-			break
-		}
+	var dbConnection = db.Get();
+
+	rows, err := dbConnection.Query("delete from player where id=$1", id)
+
+	if err != nil {
+		println("Delete erred: ", err.Error())
 	}
+
+	rows.Close()
 }
