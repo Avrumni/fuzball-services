@@ -1,6 +1,9 @@
 package player
 
-import "errors"
+import (
+	"errors"
+	"motome.com.au/fuzball-services/db"
+)
 
 var players []Player
 
@@ -19,8 +22,19 @@ func GetById (id string) (Player, error) {
 }
 
 func Create(player Player) Player {
-	player.ID = "UUID"
-	players = append(players, player)
+	var dbConnection = db.Get();
+
+	rows, err := dbConnection.Query("insert into player(firstname, lastname) values($1, $2)", player.Firstname, player.Lastname)
+
+	strRows, _ := rows.Columns()
+
+	println(1, strRows)
+
+	if err != nil {
+		println(2, err.Error())
+	}
+
+	rows.Close()
 	return player
 }
 
