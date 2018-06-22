@@ -2,71 +2,78 @@ package player
 
 import (
 	"errors"
-	"motome.com.au/fuzball-services/db"
 )
 
 var players []Player
 
+//func Query(query string, args ...interface{}) []*db.Entity {
+//	var dbConnection = db.Get()
+//
+//	rows, err := dbConnection.Query(query, args)
+//	if err != nil {
+//		println(err.Error())
+//	}
+//
+//	defer rows.Close()
+//
+//	entities := make([]*db.Entity, 0)
+//
+//
+//	columns, _ := rows.ColumnTypes()
+//
+//	for rows.Next() {
+//		entity := new(db.Entity)
+//
+//		for _, column := range columns {
+//			entity.
+//		}
+//
+//		err := rows.Scan(&entity.ID, &entity.Firstname, &entity.Lastname)
+//		if err != nil {
+//			println(err.Error())
+//		}
+//		entities = append(entities, entity)
+//	}
+//
+//	return entities
+//}
+
 func GetAll () []*Player {
-	var dbConnection = db.Get();
+	players, err := daoGetAll()
 
-	rows, err := dbConnection.Query("SELECT * FROM player")
-	if err != nil {
-		println(err.Error())
+	if (err == nil) {
+		return players
 	}
 
-	defer rows.Close()
-
-	players := make([]*Player, 0)
-	for rows.Next() {
-		player := new(Player)
-		err := rows.Scan(&player.ID, &player.Firstname, &player.Lastname)
-		if err != nil {
-			println(err.Error())
-		}
-		players = append(players, player)
-	}
-	if err = rows.Err(); err != nil {
-		println(err.Error())
-	}
-	return players
+	println(err.Error())
+	return nil
 }
 
-func GetById (id string) (Player, error) {
-	for _, item := range players {
-		if item.ID == id {
-			return item, nil
-		}
+func GetById (id string) (*Player, error) {
+	player, err := daoGetById(id)
+
+	if (err == nil) {
+		return player, nil
 	}
 
-	return Player{}, errors.New("Not Found")
+	return nil, errors.New("Not Found")
 }
 
-func Create(player Player) Player {
-	var dbConnection = db.Get();
+func Create(player Player) *Player {
+	updatedPlayer, err := daoCreate(player)
 
-	rows, err := dbConnection.Query("insert into player(firstname, lastname) values($1, $2)", player.Firstname, player.Lastname)
-
-	strRows, _ := rows.Columns()
-
-	println(1, strRows)
-
-	if err != nil {
-		println("Create erred: ", err.Error())
+	if (err != nil) {
+		println("Delete erred: ", err.Error())
+		return nil
 	}
 
-	rows.Close()
-	return player
+	return updatedPlayer
 }
 
 func DeleteById(id string)  {
-	var dbConnection = db.Get();
-
-	rows, err := dbConnection.Query("delete from player where id=$1", id)
+	err := daoDelete(id)
 
 	if err != nil {
 		println("Delete erred: ", err.Error())
 	}
-
-	rows.Close()
 }

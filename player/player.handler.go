@@ -21,9 +21,9 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 	var player Player
 	_ = json.NewDecoder(r.Body).Decode(&player)
 
-	player = Create(player)
+	updatedPlayer := Create(player)
 
-	json.NewEncoder(w).Encode(player)
+	json.NewEncoder(w).Encode(updatedPlayer)
 }
 
 func DeleteHandler(w http.ResponseWriter, r *http.Request) {
