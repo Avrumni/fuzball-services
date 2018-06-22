@@ -23,7 +23,7 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	player = Create(player)
 
-	//json.NewEncoder(w).Encode(player)
+	json.NewEncoder(w).Encode(player)
 }
 
 func DeleteHandler(w http.ResponseWriter, r *http.Request) {
