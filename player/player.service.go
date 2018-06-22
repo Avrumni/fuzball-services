@@ -1,21 +1,16 @@
 package player
 
 import (
-	"database/sql"
+	"errors"
+	"motome.com.au/fuzball-services/db"
 )
 
 var players []Player
 
-func Make (row *sql.Rows) (*Player, error) {
-	player := new(Player)
-
-	return player, row.Scan(&player.ID, &player.Firstname, &player.Lastname)
-}
-
-func Query (query string, maker func(rows sql.Rows) (struct, error), args ...string) []struct {
+func GetAll () []*Player {
 	var dbConnection = db.Get();
 
-	rows, err := dbConnection.Query(query, args)
+	rows, err := dbConnection.Query("SELECT * FROM player")
 	if err != nil {
 		println(err.Error())
 	}
@@ -35,10 +30,6 @@ func Query (query string, maker func(rows sql.Rows) (struct, error), args ...str
 		println(err.Error())
 	}
 	return players
-}
-
-func GetAll () []Player {
-	return Query("SELECT * FROM player", Make)
 }
 
 func GetById (id string) (Player, error) {
@@ -78,21 +69,4 @@ func DeleteById(id string)  {
 	}
 
 	rows.Close()
-}
-
-
-func doMagic(rows sql.Rows) {
-	columns, err := rows.Columns()
-
-	if err != nil {
-		println("Ahh", err.Error())
-		return
-	}
-
-	for rows.Next() {
-		var row = make(map[string]string, len(columns))
-		for column := range columns {
-			row[column] =
-		}
-	}
 }
