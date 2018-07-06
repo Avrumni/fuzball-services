@@ -1,45 +1,20 @@
 package team
 
 import (
-	"errors"
+	"motome.com.au/fuzball-services/player"
 )
 
 var teams []Team
 
-//func Query(query string, args ...interface{}) []*db.Entity {
-//	var dbConnection = db.Get()
-//
-//	rows, err := dbConnection.Query(query, args)
-//	if err != nil {
-//		println(err.Error())
-//	}
-//
-//	defer rows.Close()
-//
-//	entities := make([]*db.Entity, 0)
-//
-//
-//	columns, _ := rows.ColumnTypes()
-//
-//	for rows.Next() {
-//		entity := new(db.Entity)
-//
-//		for _, column := range columns {
-//			entity.
-//		}
-//
-//		err := rows.Scan(&entity.ID, &entity.Firstname, &entity.Lastname)
-//		if err != nil {
-//			println(err.Error())
-//		}
-//		entities = append(entities, entity)
-//	}
-//
-//	return entities
-//}
-
 func GetAll () []*Team {
-	teams, err := daoGetAll()
+	teamsDao, err := daoGetAll()
+	teams := make([]*Team, 0)
+
+	for _, teamDto := range teamsDao {
+		var team *Team
+		team, err = mapTeam(teamDto)
+		teams = append(teams, team)
+	}
 
 	if (err == nil) {
 		return teams
@@ -50,21 +25,37 @@ func GetAll () []*Team {
 }
 
 func GetById (id string) (*Team, error) {
-	team, err := daoGetById(id)
+	teamDto, err := daoGetById(id)
+
+	var team *Team
+
+	if (err == nil) {
+		team, err = mapTeam(teamDto)
+	}
 
 	if (err == nil) {
 		return team, nil
 	}
 
-	return nil, errors.New("Not Found")
+	return nil, err
 }
 
 func Create(team Team) *Team {
-	updatedTeam, err := daoCreate(team)
+	teamDto := TeamDto{
+		ID: team.ID,
+		Player1Id: team.Player1.ID,
+		Player2Id: team.Player2.ID,
+	}
+
+	updatedTeamDto, err := daoCreate(teamDto)
+	var updatedTeam *Team
+
+	if (err == nil) {
+		updatedTeam, err = mapTeam(updatedTeamDto)
+	}
 
 	if (err != nil) {
 		println("Delete erred: ", err.Error())
-		return nil
 	}
 
 	return updatedTeam
@@ -76,4 +67,17 @@ func DeleteById(id string)  {
 	if err != nil {
 		println("Delete erred: ", err.Error())
 	}
+}
+
+func mapTeam(dto *TeamDto) (*Team, error) {
+	player1, err := player.GetById(dto.Player1Id)
+	player2, err := player.GetById(dto.Player2Id)
+
+	team := Team{
+		ID: dto.ID,
+		Player1: player1,
+		Player2: player2,
+	}
+
+	return &team, err
 }

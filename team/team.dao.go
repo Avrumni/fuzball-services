@@ -5,9 +5,9 @@ import (
 	"database/sql"
 )
 
-func daoGetAll() ([]*Team, error) {
+func daoGetAll() ([]*TeamDto, error) {
 	var dbConnection = db.Get()
-	var teams []*Team
+	var teams []*TeamDto
 
 	rows, err := dbConnection.Query("SELECT * FROM team")
 	if err == nil {
@@ -18,10 +18,10 @@ func daoGetAll() ([]*Team, error) {
 	return teams, err
 }
 
-func daoGetById(id string) (*Team, error) {
+func daoGetById(id string) (*TeamDto, error) {
 	var dbConnection = db.Get()
-	var teams []*Team
-	var team *Team
+	var teams []*TeamDto
+	var team *TeamDto
 
 	rows, err := dbConnection.Query("SELECT * FROM team where id = $1", id)
 
@@ -44,14 +44,14 @@ func daoDelete(id string) error {
 	return err
 }
 
-func daoCreate(team Team) (*Team, error) {
+func daoCreate(team TeamDto) (*TeamDto, error) {
 	var dbConnection = db.Get();
-	var teams []*Team
-	var updatedTeam *Team
+	var teams []*TeamDto
+	var updatedTeam *TeamDto
 
 	rows, err := dbConnection.Query(
-		"insert into team(firstname, lastname) values($1, $2) returning *",
-		team.Firstname, team.Lastname)
+		"insert into team(player_1_id, player_2_id) values($1, $2) returning *",
+		team.Player1Id, team.Player2Id)
 
 	if err == nil {
 		rows.NextResultSet()
@@ -63,20 +63,20 @@ func daoCreate(team Team) (*Team, error) {
 	return updatedTeam, err
 }
 
-func daoMap(rows *sql.Rows) ([]*Team, error) {
+func daoMap(rows *sql.Rows) ([]*TeamDto, error) {
 	var err error
-	teams := make([]*Team, 0)
+	teamsDto := make([]*TeamDto, 0)
 
 	for rows.Next() {
-		team := new(Team)
+		teamDto := new(TeamDto)
 
-		err = rows.Scan(&team.ID, &team.Firstname, &team.Lastname)
+		err = rows.Scan(&teamDto.ID, &teamDto.Player1Id, &teamDto.Player2Id)
 		if err != nil {
 			println(err.Error())
 		}
 
-		teams = append(teams, team)
+		teamsDto = append(teamsDto, teamDto)
 	}
 
-	return teams, err
+	return teamsDto, err
 }
