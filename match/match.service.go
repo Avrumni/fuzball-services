@@ -1,45 +1,20 @@
 package match
 
 import (
-	"errors"
+	"motome.com.au/fuzball-services/team"
 )
 
 var matchs []Match
 
-//func Query(query string, args ...interface{}) []*db.Entity {
-//	var dbConnection = db.Get()
-//
-//	rows, err := dbConnection.Query(query, args)
-//	if err != nil {
-//		println(err.Error())
-//	}
-//
-//	defer rows.Close()
-//
-//	entities := make([]*db.Entity, 0)
-//
-//
-//	columns, _ := rows.ColumnTypes()
-//
-//	for rows.Next() {
-//		entity := new(db.Entity)
-//
-//		for _, column := range columns {
-//			entity.
-//		}
-//
-//		err := rows.Scan(&entity.ID, &entity.Firstname, &entity.Lastname)
-//		if err != nil {
-//			println(err.Error())
-//		}
-//		entities = append(entities, entity)
-//	}
-//
-//	return entities
-//}
-
 func GetAll () []*Match {
-	matchs, err := daoGetAll()
+	matchsDao, err := daoGetAll()
+	matchs := make([]*Match, 0)
+
+	for _, matchDto := range matchsDao {
+		var match *Match
+		match, err = mapMatch(matchDto)
+		matchs = append(matchs, match)
+	}
 
 	if (err == nil) {
 		return matchs
@@ -50,21 +25,39 @@ func GetAll () []*Match {
 }
 
 func GetById (id string) (*Match, error) {
-	match, err := daoGetById(id)
+	matchDto, err := daoGetById(id)
+
+	var match *Match
+
+	if (err == nil) {
+		match, err = mapMatch(matchDto)
+	}
 
 	if (err == nil) {
 		return match, nil
 	}
 
-	return nil, errors.New("Not Found")
+	return nil, err
 }
 
 func Create(match Match) *Match {
-	updatedMatch, err := daoCreate(match)
+	matchDto := MatchDto{
+		ID: match.ID,
+		TeamAId: match.TeamA.ID,
+		TeamAScore: match.TeamAScore,
+		TeamBId: match.TeamB.ID,
+		TeamBScore: match.TeamBScore,
+	}
+
+	updatedMatchDto, err := daoCreate(matchDto)
+	var updatedMatch *Match
+
+	if (err == nil) {
+		updatedMatch, err = mapMatch(updatedMatchDto)
+	}
 
 	if (err != nil) {
 		println("Delete erred: ", err.Error())
-		return nil
 	}
 
 	return updatedMatch
@@ -76,4 +69,19 @@ func DeleteById(id string)  {
 	if err != nil {
 		println("Delete erred: ", err.Error())
 	}
+}
+
+func mapMatch(dto *MatchDto) (*Match, error) {
+	teamA, err := team.GetById(dto.TeamAId)
+	teamB, err := team.GetById(dto.TeamBId)
+
+	match := Match{
+		ID: dto.ID,
+		TeamA: teamA,
+		TeamAScore: dto.TeamAScore,
+		TeamB: teamB,
+		TeamBScore: dto.TeamBScore,
+	}
+
+	return &match, err
 }
