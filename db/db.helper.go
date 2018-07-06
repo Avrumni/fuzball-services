@@ -15,7 +15,6 @@ func Connect() {
 	var driver database.Driver
 	var err error
 
-	println("Start here")
 	dbUrl := os.Getenv("DATABASE_URL")
 	fmt.Println(dbUrl)
 	db, err = sql.Open("postgres", dbUrl)
@@ -35,7 +34,6 @@ func Connect() {
 }
 
 func Get() *sql.DB {
-	println(0, db)
 	return db
 }
 

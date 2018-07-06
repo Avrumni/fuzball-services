@@ -34,13 +34,3 @@ func main() {
 
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
-
-//type Team struct {
-//	Player1 player.Player `json:"player1,omitempty"`
-//	Player2 player.Player `json:"player2,omitempty"`
-//}
-//
-//type Match struct {
-//	TeamA Team `json:"teamA,omitempty"`
-//	TeamB Team `json:"teamB,omitempty"`
-//}
