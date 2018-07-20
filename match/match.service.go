@@ -41,6 +41,20 @@ func GetById (id string) (*Match, error) {
 }
 
 func Create(match Match) *Match {
+	t, err := team.FindOrCreate(match.TeamA)
+	if err != nil {
+		println(err.Error())
+	} else {
+		match.TeamA = t
+	}
+
+	t, err = team.FindOrCreate(match.TeamB)
+	if err != nil {
+		println(err.Error())
+	} else {
+		match.TeamB = t
+	}
+
 	matchDto := MatchDto{
 		ID: match.ID,
 		TeamAId: match.TeamA.ID,
@@ -54,10 +68,8 @@ func Create(match Match) *Match {
 
 	if (err == nil) {
 		updatedMatch, err = mapMatch(updatedMatchDto)
-	}
-
-	if (err != nil) {
-		println("Delete erred: ", err.Error())
+	} else {
+		println("Create erred: ", err.Error())
 	}
 
 	return updatedMatch

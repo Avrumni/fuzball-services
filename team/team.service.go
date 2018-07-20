@@ -2,6 +2,7 @@ package team
 
 import (
 	"motome.com.au/fuzball-services/player"
+	"encoding/json"
 )
 
 var teams []Team
@@ -38,6 +39,34 @@ func GetById (id string) (*Team, error) {
 	}
 
 	return nil, err
+}
+
+func FindOrCreate(team *Team) (*Team, error) {
+	teamDto, err := daoFindByPlayers(team.Player1.ID, team.Player2.ID)
+
+	str, _ := json.Marshal(teamDto)
+	println("With match: ", string(str))
+
+	if err != nil || teamDto == nil {
+		if (err != nil) {
+			println("Couldn't link to team")
+			println(err.Error())
+		}
+
+		println("Team does not exist, creating...")
+		err = nil
+
+		teamDto, err = daoCreate(TeamDto{
+			Player1Id: team.Player1.ID,
+			Player2Id: team.Player2.ID,
+		})
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return mapTeam(teamDto)
 }
 
 func Create(team Team) *Team {

@@ -34,6 +34,28 @@ func daoGetById(id string) (*TeamDto, error) {
 	return team, err
 }
 
+func daoFindByPlayers(player1Id string, player2Id string) (*TeamDto, error) {
+	var dbConnection = db.Get()
+	var teams []*TeamDto
+	var team *TeamDto
+
+	rows, err := dbConnection.Query("SELECT * FROM team where player_1_id = $1 AND player_2_id = $2", player1Id, player2Id)
+
+	if (err == nil) {
+		if len(teams) == 0 {
+			return nil, nil
+		}
+
+		teams, err = daoMap(rows)
+		team = teams[0]
+		rows.Close()
+	} else {
+		println(err.Error())
+	}
+
+	return team, err
+}
+
 func daoDelete(id string) error {
 	var dbConnection = db.Get()
 
