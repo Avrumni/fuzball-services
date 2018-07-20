@@ -19,14 +19,14 @@ func Connect() {
 	fmt.Println(dbUrl)
 	db, err = sql.Open("postgres", dbUrl)
 	if err != nil {
-		print(1, err.Error())
+		println(1, err.Error())
 		return
 	}
 
 	driver, err = postgres.WithInstance(db, &postgres.Config{})
 
 	if err != nil {
-		print(2, err.Error())
+		println(2, err.Error())
 		return
 	}
 
@@ -38,12 +38,18 @@ func Get() *sql.DB {
 }
 
 func migrateDatabase(driver database.Driver) {
+	println("Performing migration")
 	m, err := migrate.NewWithDatabaseInstance("file://migrations", "postgres", driver)
 
 	if err != nil {
-		print(3, err.Error())
+		println("Error on connect:", err.Error())
 		return
 	}
 
-	m.Up()
+	err = m.Up()
+
+	if err != nil {
+		println("Error on up:", err.Error())
+		return
+	}
 }

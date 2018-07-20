@@ -50,8 +50,8 @@ func daoCreate(player Player) (*Player, error) {
 	var updatedPlayer *Player
 
 	rows, err := dbConnection.Query(
-		"insert into player(firstname, lastname) values($1, $2) returning *",
-		player.Firstname, player.Lastname)
+		"insert into player(name) values($1) returning *",
+		player.Name)
 
 	if err == nil {
 		rows.NextResultSet()
@@ -70,7 +70,7 @@ func daoMap(rows *sql.Rows) ([]*Player, error) {
 	for rows.Next() {
 		player := new(Player)
 
-		err = rows.Scan(&player.ID, &player.Firstname, &player.Lastname)
+		err = rows.Scan(&player.ID, &player.Name)
 		if err != nil {
 			println(err.Error())
 		}
