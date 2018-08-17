@@ -10,10 +10,18 @@ import (
 	"motome.com.au/fuzball-services/db"
 	"motome.com.au/fuzball-services/team"
 	"motome.com.au/fuzball-services/match"
+	"os"
 )
 
 // our main function
 func main() {
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
+
+	println("Starting on port:" + port)
 	db.Connect()
 
 	router := mux.NewRouter()
@@ -32,5 +40,5 @@ func main() {
 	router.HandleFunc("/team", team.CreateHandler).Methods("POST")
 	router.HandleFunc("/team/{id}", team.DeleteHandler).Methods("DELETE")
 
-	log.Fatal(http.ListenAndServe(":8000", router))
+	log.Fatal(http.ListenAndServe(":" + port, router))
 }
