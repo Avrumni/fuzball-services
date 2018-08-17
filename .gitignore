@@ -17,5 +17,5 @@
 .idea_modules/
 *.iml
 
-vendor/
+vendor/*/
 fuzball-services

@@ -1,0 +1,65 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"path": "all",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "FRFSuLvSOGXe6reGqbJC6Dh1x8w=",
+			"path": "github.com/golang-migrate/migrate",
+			"revision": "387f79be1348ac93b1964366b031b458f9007a5f",
+			"revisionTime": "2018-06-04T16:24:35Z"
+		},
+		{
+			"checksumSHA1": "ISRVbBl9aHWDQfCDJ+nJf9CDe6M=",
+			"path": "github.com/golang-migrate/migrate/database",
+			"revision": "387f79be1348ac93b1964366b031b458f9007a5f",
+			"revisionTime": "2018-06-04T16:24:35Z"
+		},
+		{
+			"checksumSHA1": "87exoUYv2GT9d/YSYujoXKuKRlQ=",
+			"path": "github.com/golang-migrate/migrate/database/postgres",
+			"revision": "387f79be1348ac93b1964366b031b458f9007a5f",
+			"revisionTime": "2018-06-04T16:24:35Z"
+		},
+		{
+			"checksumSHA1": "bU1rfw/7W2qjZq0JtXLNJJoGMZI=",
+			"path": "github.com/golang-migrate/migrate/source",
+			"revision": "387f79be1348ac93b1964366b031b458f9007a5f",
+			"revisionTime": "2018-06-04T16:24:35Z"
+		},
+		{
+			"checksumSHA1": "+UCQeYrep6UWvMEhYOjH9pv08yc=",
+			"path": "github.com/golang-migrate/migrate/source/file",
+			"revision": "387f79be1348ac93b1964366b031b458f9007a5f",
+			"revisionTime": "2018-06-04T16:24:35Z"
+		},
+		{
+			"checksumSHA1": "g/V4qrXjUGG9B+e3hB+4NAYJ5Gs=",
+			"path": "github.com/gorilla/context",
+			"revision": "08b5f424b9271eedf6f9f0ce86cb9396ed337a42",
+			"revisionTime": "2016-08-17T18:46:32Z"
+		},
+		{
+			"checksumSHA1": "Aw8z8w/d+EFt8XCUYPjzSe0bPrU=",
+			"path": "github.com/gorilla/mux",
+			"revision": "cb4698366aa625048f3b815af6a0dea8aef9280a",
+			"revisionTime": "2018-06-05T21:15:56Z"
+		},
+		{
+			"checksumSHA1": "s6eyIXpJ7VAU06FM27GcEBM/5lo=",
+			"path": "github.com/lib/pq",
+			"revision": "90697d60dd844d5ef6ff15135d0203f65d2f53b8",
+			"revisionTime": "2018-05-23T17:54:26Z"
+		},
+		{
+			"checksumSHA1": "AU3fA8Sm33Vj9PBoRPSeYfxLRuE=",
+			"path": "github.com/lib/pq/oid",
+			"revision": "90697d60dd844d5ef6ff15135d0203f65d2f53b8",
+			"revisionTime": "2018-05-23T17:54:26Z"
+		}
+	],
+	"rootPath": "motome.com.au/fuzball-services"
+}
