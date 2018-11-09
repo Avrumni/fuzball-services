@@ -34,6 +34,21 @@ func daoGetById(id string) (*Player, error) {
 	return player, err
 }
 
+func daoGetByName(name string) (*Player, error) {
+	var dbConnection = db.Get()
+	var players []*Player
+	var player *Player
+	rows, err := dbConnection.Query("SELECT * FROM player where name = $1", name)
+
+	if (err == nil) {
+		players, err = daoMap(rows)
+		player = players[0]
+		rows.Close()
+	}
+
+	return player, err
+}
+
 func daoDelete(id string) error {
 	var dbConnection = db.Get()
 

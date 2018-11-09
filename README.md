@@ -21,6 +21,6 @@ Starting application
 ➜  ~/go/bin/govendor fetch +out
 ➜  go install
 ➜  ~/go/bin/fuzball-services
-➜  go install && DATABASE_URL=postgres://localhost:5432/fuzball?sslmode=disable ~/go/bin/fuzball-services
+➜  go install && DATABASE_URL=postgres://localhost:5432/fuzball?sslmode=disable PORT=8000 ~/go/bin/fuzball-services
 ➜  
 ```

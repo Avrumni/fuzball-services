@@ -7,6 +7,7 @@ import (
 	"github.com/golang-migrate/migrate/database/postgres"
 	"github.com/golang-migrate/migrate"
 	"github.com/golang-migrate/migrate/database"
+	"log"
 )
 
 var db *sql.DB
@@ -19,14 +20,14 @@ func Connect() {
 	fmt.Println(dbUrl)
 	db, err = sql.Open("postgres", dbUrl)
 	if err != nil {
-		println(1, err.Error())
+		log.Fatal(err)
 		return
 	}
 
 	driver, err = postgres.WithInstance(db, &postgres.Config{})
 
 	if err != nil {
-		println(2, err.Error())
+		log.Fatal(err)
 		return
 	}
 

@@ -3,14 +3,14 @@ package main
 import (
 	"log"
 	"net/http"
-	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 	_ "github.com/golang-migrate/migrate/source/file"
-	"motome.com.au/fuzball-services/player"
 	"motome.com.au/fuzball-services/db"
-	"motome.com.au/fuzball-services/team"
-	"motome.com.au/fuzball-services/match"
 	"os"
+	"github.com/gorilla/mux"
+	"motome.com.au/fuzball-services/player"
+	"motome.com.au/fuzball-services/match"
+	"motome.com.au/fuzball-services/team"
 )
 
 // our main function
@@ -27,6 +27,8 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/player", player.GetAllHandler).Methods("GET")
 	router.HandleFunc("/player/{id}", player.GetByIdHandler).Methods("GET")
+	//TODO Rethink API naming
+	router.HandleFunc("/player/name/{name}", player.GetByNameHandler).Methods("GET")
 	router.HandleFunc("/player", player.CreateHandler).Methods("POST")
 	router.HandleFunc("/player/{id}", player.DeleteHandler).Methods("DELETE")
 
@@ -40,5 +42,19 @@ func main() {
 	router.HandleFunc("/team", team.CreateHandler).Methods("POST")
 	router.HandleFunc("/team/{id}", team.DeleteHandler).Methods("DELETE")
 
+	router.Use(loggingMiddleware)
+
+	logger := log.New(os.Stdout, "http: ", log.LstdFlags)
+	logger.Println("Server is starting...")
+
 	log.Fatal(http.ListenAndServe(":" + port, router))
+}
+
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Do stuff here
+		log.Println(r.RequestURI)
+		// Call the next handler, which can be another middleware in the chain, or the final handler.
+		next.ServeHTTP(w, r)
+	})
 }

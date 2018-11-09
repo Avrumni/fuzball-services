@@ -59,6 +59,16 @@ func GetById (id string) (*Player, error) {
 	return nil, errors.New("Not Found")
 }
 
+func GetByName (name string) (*Player, error) {
+	player, err := daoGetByName(name)
+
+	if (err == nil) {
+		return player, nil
+	}
+
+	return nil, errors.New("Not Found")
+}
+
 func Create(player Player) *Player {
 	updatedPlayer, err := daoCreate(player)
 
